@@ -7,10 +7,13 @@ face_haar_cascade = cv.CascadeClassifier("data/haarcascade_frontalface_default.x
 eye_haar_cascade = cv.CascadeClassifier("data/haarcascade_eye.xml")
 
 
-def online_face_recognition(profile_names, IncrementalKCenters, n_pictures=15):
+def online_face_recognition(profile_names,
+                            IncrementalKCenters,
+                            n_pictures=15,
+                            video_filename=None):
     """
     Run online face recognition.
-    
+
     Parameters
     ----------
     profile_names : list
@@ -19,6 +22,8 @@ def online_face_recognition(profile_names, IncrementalKCenters, n_pictures=15):
         Class implementing Incremental k-centers
     n_pictures : int
         Number of (labeled) pictures to use for each user_name
+    video_filename : str
+        .mp4 video file. If None, read from camera
     """
     images = []
     labels = []
@@ -34,7 +39,10 @@ def online_face_recognition(profile_names, IncrementalKCenters, n_pictures=15):
     #  Generate model
     model = IncrementalKCenters(faces, labels, label_names)
     # Start camera
-    cam = cv.VideoCapture(0)
+    if video_filename is None:
+        cam = cv.VideoCapture(0)
+    else:
+        cam = cv.VideoCapture(video_filename)
     while True:
         ret_val, img = cam.read()
         working_image, grey_image = preprocess_camera_image(img)
@@ -102,11 +110,20 @@ def online_face_recognition(profile_names, IncrementalKCenters, n_pictures=15):
 
 
 
-def create_user_profile(user_name, faces_path="data/"):
+def create_user_profile(user_name,
+                        faces_path="data/",
+                        video_filename=None):
     """
     Uses the camera to collect data.
-    :param user_name: name that identifies the person/face
-    :param faces_path: where to store the images
+    
+    Parameters
+    ----------
+    user_name : str
+        Name that identifies the person/face
+    faces_path : str
+        Where to store the images
+    video_filename : str
+        .mp4 video file. If None, read from camera
     """
     # Check if profile exists. If not, create it.
     faces_path = os.path.join(faces_path, "faces")
@@ -119,7 +136,10 @@ def create_user_profile(user_name, faces_path="data/"):
         image_count = len(os.listdir(profile_path))
         print("Profile found with", image_count, "images.")
     # Launch video capture
-    cam = cv.VideoCapture(0)
+    if video_filename is None:
+        cam = cv.VideoCapture(0)
+    else:
+        cam = cv.VideoCapture(video_filename)
     while True:
         ret_val, img = cam.read()
         working_image, grey_image = preprocess_camera_image(img)
