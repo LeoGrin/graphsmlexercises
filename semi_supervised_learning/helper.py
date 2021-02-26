@@ -28,7 +28,7 @@ def min_span_tree(W):
     return T
 
 
-def build_similarity_graph(X, var=1, eps=0, k=0):
+def build_similarity_graph(X, var=1, eps=0, k=0, **kwargs):
     """
     Computes the similarity matrix for a given dataset of samples.
      
@@ -122,7 +122,7 @@ def build_laplacian(W, laplacian_normalization=""):
         raise ValueError
 
 
-def build_laplacian_regularized(X, laplacian_regularization, var=1.0, eps=0.0, k=0, laplacian_normalization=""):
+def build_laplacian_regularized(X, laplacian_regularization, var=1.0, eps=0.0, k=0, laplacian_normalization="", **kwargs):
     """
     Function to construct a regularized Laplacian from data.
 
